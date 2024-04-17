@@ -52,9 +52,10 @@ class RecordManager(Singleton, BaseNotifyWriter):
 
     async def process_watcher(self,  sleep_time: int = 5, close_duration: int = 10):
         """control of running records"""
+        await self.send_notify("process_watcher work")
+
         while True:
             now = datetime.datetime.now()
-            await self.send_notify("process_watcher work")
 
             cameras_to_check = list(self.active_records.keys())
             for camera in cameras_to_check:

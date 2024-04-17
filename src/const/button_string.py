@@ -6,5 +6,7 @@ SCHEDULE_BS = "📅Schedule"
 CAMERAS_BS = "📹Cameras"
 SETTINGS_BS = "⚙️Settings"
 
-ADD_BS = "➖Delete"
-DELETE_BS = "➕Add"
+GET_PHOTO_BS = "📷Take a photo"
+
+ADD_BS = "➕Add"
+DELETE_BS = "➖Delete"

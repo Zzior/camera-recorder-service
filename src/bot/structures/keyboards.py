@@ -1,7 +1,7 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from .keyboards_string import BACK_BS, FILES_BS, RECORDS_BS, SCHEDULE_BS, CAMERAS_BS, SETTINGS_BS, ADD_BS, DELETE_BS
+from src.const.button_string import *
 
 back_rkb = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text=BACK_BS)]],
@@ -31,6 +31,13 @@ admin_main_rkb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+get_photo_rkb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text=ADD_BS), KeyboardButton(text=DELETE_BS)],
+        [KeyboardButton(text=GET_PHOTO_BS), KeyboardButton(text=BACK_BS)]
+    ],
+    resize_keyboard=True
+)
 
 admin_add_and_del_rkb = ReplyKeyboardMarkup(
     keyboard=[

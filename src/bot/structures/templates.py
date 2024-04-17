@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup  # ReplyKeyboardRemove
 
 from src.bot.structures.fsm import Admin
-from src.bot.structures.keyboards.keyboards import admin_main_rkb
+from src.bot.structures.keyboards import admin_main_rkb
 
 
 async def message_not_reg(message: Message, kb: ReplyKeyboardMarkup = None) -> None:
