@@ -9,7 +9,7 @@ back_rkb = ReplyKeyboardMarkup(
 )
 
 
-def build_rkb(buttons: list[str] | tuple[str] | set[str], back: bool = True) -> ReplyKeyboardMarkup:
+def build_rkb(buttons: list[str] | tuple[str] | set[str], back: bool = True, adjust: int = 2) -> ReplyKeyboardMarkup:
     result = ReplyKeyboardBuilder()
     for button in buttons:
         result.add(KeyboardButton(text=button))
@@ -17,7 +17,7 @@ def build_rkb(buttons: list[str] | tuple[str] | set[str], back: bool = True) -> 
     if back:
         result.add(KeyboardButton(text=BACK_BS))
 
-    result.adjust(2)
+    result.adjust(adjust)
 
     return result.as_markup(resize_keyboard=True)
 
