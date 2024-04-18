@@ -16,7 +16,7 @@ class AbstractNotifyManager(ABC):
         pass
 
     @abstractmethod
-    async def notify(self, event_name: str, message: str) -> None:
+    async def notify(self, event_name: str, message: str, deferred: bool = True, d_time=2) -> None:
         pass
 
 

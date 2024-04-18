@@ -13,7 +13,10 @@ class Admin(StatesGroup):
     # Cameras
     cameras_add_name = State()
     cameras_add_rtsp = State()
-
     cameras_delete_name = State()
-
     cameras_photo = State()
+
+    # Records
+    records_run_name = State()
+    records_run_duration = State()
+    records_stop = State()

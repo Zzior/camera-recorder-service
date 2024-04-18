@@ -11,8 +11,8 @@ from src.data_access.configurator import Configurator
 # Models (Utils)
 from src.classes.models.loger import setup_logger
 from src.classes.models.notify_manager import NotifyManager
-from src.classes.models.recorder import RecordManager
-from src.classes.models.cameras import CameraManager
+from src.classes.models.record_manager import RecordManager
+from src.classes.models.camera_manager import CameraManager
 
 app_dir: Path = Path(__file__).parent.parent
 

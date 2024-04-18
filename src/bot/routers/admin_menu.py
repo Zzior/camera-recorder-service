@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram.types import Message, input_file
 from aiogram.fsm.context import FSMContext
 from aiogram import Router
@@ -5,7 +7,7 @@ from aiogram import Router
 from src.utils.ping import ping
 from src.configuration import conf
 from src.bot.structures.fsm import Admin
-from src.bot.structures.templates import admin_main_menu, check_back_button
+from src.bot.structures.templates import admin_main_menu, check_back_button, message_not_reg, send_record_status
 
 from src.const.message_answers import *  # from src.const.button_string import *
 from src.bot.structures.keyboards import *
@@ -20,13 +22,15 @@ async def admin_router_main_menu(message: Message, state: FSMContext):
         await message.answer("soon")
 
     elif message.text == RECORDS_BS:
-        await message.answer("soon")
+        await state.set_state(Admin.records)
+        statuses = conf.record_manager.get_records_status()
+        await send_record_status(message=message, status=statuses, kb=records_rkb)
 
-    elif message.text == SETTINGS_BS:
+    elif message.text == SCHEDULE_BS:
         await message.answer("soon")
 
     elif message.text == CAMERAS_BS:
-        await message.answer(LOAD_STATUSES_ANS, reply_markup=get_photo_rkb)
+        await message.answer(LOAD_STATUSES_ANS, reply_markup=cameras_rkb)
         await state.set_state(Admin.cameras)
 
         # get all status of cameras
@@ -41,6 +45,74 @@ async def admin_router_main_menu(message: Message, state: FSMContext):
         await message.answer("soon")
 
 
+# ===================================== Records ===================================================
+@admin_router.message(Admin.records)
+@check_back_button
+async def admin_router_records(message: Message, state: FSMContext):
+    if message.text == RECORDS_START_BS:
+        await state.set_state(Admin.records_run_name)
+        await message.answer(RECORDS_SELECT_CAMERA_ANS, reply_markup=build_rkb(conf.configurator.cameras.keys()))
+
+    elif message.text == RECORDS_STOP_BS:
+        active_records = conf.record_manager.active_records.keys()
+        if active_records:
+            await state.set_data({"active_cameras": active_records})
+            await state.set_state(Admin.records_stop)
+            await message.answer(
+                RECORDS_SELECT_CAMERA_ANS,
+                reply_markup=build_rkb(active_records)
+            )
+        else:
+            await message.answer(ACTIVE_RECORDS_NONE_ANS)
+
+    elif message.text == RECORDS_STATUS_BS:
+        statuses = conf.record_manager.get_records_status()
+        await send_record_status(message=message, status=statuses, kb=records_rkb)
+
+    else:
+        await message_not_reg(message, records_rkb)
+
+
+@admin_router.message(Admin.records_run_name)
+@check_back_button
+async def admin_router_records_start(message: Message, state: FSMContext):
+    if message.text in conf.configurator.cameras:
+        if message.text not in conf.record_manager.get_records_status():
+            await state.set_data({"name": message.text})
+            await state.set_state(Admin.records_run_duration)
+            await message.answer(RECORDS_ENTER_DURATION_ANS, reply_markup=back_rkb)
+        else:
+            await message.answer(RECORDS_SELECT_CAMERA_REC_ANS)
+    else:
+        await message.answer(RECORDS_SELECT_CAMERA_ANS)
+
+
+@admin_router.message(Admin.records_run_duration)
+@check_back_button
+async def admin_router_records_run_duration(message: Message, state: FSMContext):
+    if message.text and message.text.isdigit() and int(message.text) > 0:
+        name = await state.get_data()
+        await conf.record_manager.run_record(camera=name["name"], duration=int(message.text)*60)
+        await admin_main_menu(message, state)
+
+    else:
+        await message.answer(RECORDS_ENTER_DURATION_ANS)
+
+
+@admin_router.message(Admin.records_stop)
+@check_back_button
+async def admin_router_records_stop(message: Message, state: FSMContext):
+    data = await state.get_data()
+    if message.text in data["active_cameras"]:
+        t = asyncio.create_task(conf.record_manager.stop_record(message.text))
+        await message.answer(RECORDS_STOP_ACCEPTED_ANS.format(name=message.text))
+        await admin_main_menu(message, state)
+
+    else:
+        await message.answer(RECORDS_SELECT_CAMERA_ANS)
+
+
+# ===================================== Cameras ===================================================
 @admin_router.message(Admin.cameras)
 @check_back_button
 async def admin_router_cameras(message: Message, state: FSMContext):
@@ -59,6 +131,9 @@ async def admin_router_cameras(message: Message, state: FSMContext):
         await state.set_state(Admin.cameras_photo)
         await message.answer(PHOTO_CAMERA_SELECT_ANS, reply_markup=build_rkb(conf.configurator.cameras.keys()))
 
+    else:
+        await message_not_reg(message, cameras_rkb)
+
 
 @admin_router.message(Admin.cameras_add_name)
 @check_back_button
@@ -67,11 +142,11 @@ async def admin_router_cameras_add_name(message: Message, state: FSMContext):
         await message.answer(ENTER_CAMERA_NAME_ANS)
 
     elif message.text not in conf.configurator.cameras:
-        await message.answer(ADD_CAMERA_RTSP_ANS)
-        await state.set_state(Admin.cameras_add_rtsp)
         await state.set_data({"name": message.text})
+        await state.set_state(Admin.cameras_add_rtsp)
+        await message.answer(ADD_CAMERA_RTSP_ANS)
 
-    elif message.text:
+    else:
         await message.answer(ENTER_CAMERA_NAME_ERR_ANS)
 
 

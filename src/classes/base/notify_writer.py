@@ -21,9 +21,9 @@ class BaseNotifyWriter(AbstractNotifyWriter):
         if isinstance(logger, Logger):
             self.logger = logger
 
-    async def send_notify(self, notify_message: str) -> None:
+    async def send_notify(self, notify_message: str, deferred: bool = True, d_time=2) -> None:
         if isinstance(self.notify_manager, AbstractNotifyManager):
-            await self.notify_manager.notify(self.notify_name, notify_message)
+            await self.notify_manager.notify(self.notify_name, notify_message, deferred, d_time)
 
     def write_log(self, log_info: str, log_level: int) -> None:
         if isinstance(self.logger, Logger):

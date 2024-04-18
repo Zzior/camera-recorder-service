@@ -31,7 +31,15 @@ admin_main_rkb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-get_photo_rkb = ReplyKeyboardMarkup(
+records_rkb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text=RECORDS_START_BS), KeyboardButton(text=RECORDS_STOP_BS)],
+        [KeyboardButton(text=RECORDS_STATUS_BS), KeyboardButton(text=BACK_BS)]
+    ],
+    resize_keyboard=True
+)
+
+cameras_rkb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text=ADD_BS), KeyboardButton(text=DELETE_BS)],
         [KeyboardButton(text=GET_PHOTO_BS), KeyboardButton(text=BACK_BS)]

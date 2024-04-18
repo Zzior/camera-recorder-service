@@ -5,9 +5,9 @@ from logging import Logger
 
 def setup_logger(save_path: Path) -> Logger:
     """Set up and return a configured logger."""
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.WARNING)
     file_handler = logging.FileHandler(save_path)
-    file_handler.setLevel(logging.INFO)
+    file_handler.setLevel(logging.WARNING)
     log_format = """----------------------------------------------------------------------------------------------------
     %(asctime)s - %(name)s - %(levelname)s - %(message)s
     ----------------------------------------------------------------------------------------------------"""
