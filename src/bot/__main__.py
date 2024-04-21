@@ -18,19 +18,22 @@ async def start_bot():
     conf.cameras_manager.configurate_notifier(notify_manager=conf.notify_manager, logger=conf.logger)
     conf.record_manager.configurate_notifier(notify_manager=conf.notify_manager, logger=conf.logger)
 
-    watcher = asyncio.create_task(conf.record_manager.process_watcher())
+    record_watcher = asyncio.create_task(conf.record_manager.process_watcher())
+    camera_watcher = asyncio.create_task(conf.cameras_manager.status_checker())
 
     for admin in conf.configurator.admins.values():
-        conf.notify_manager.subscribe(event_name=conf.record_manager.notify_name, tg_id=admin)
+        for event_name in conf.notify_manager.events.keys():
+            conf.notify_manager.subscribe(event_name=event_name, tg_id=admin)
     # ===================================================================================
 
     # DP
     dp = get_dispatcher()
     await dp.start_polling(bot)
-    try:
-        watcher.cancel()
-    except asyncio.CancelledError:
-        pass
+    for task in (record_watcher, camera_watcher):
+        try:
+            task.cancel()
+        except Exception as e:
+            print(f"Error task cancel Exception: {e}")
 
 if __name__ == '__main__':
     asyncio.run(start_bot())

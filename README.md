@@ -1,23 +1,22 @@
 # IPC Record Bot
 
-Проект для записи видео с IP-камер и управления расписанием записей с использованием Telegram-бота.
+A project for recording video from IP cameras and managing recording schedules using a Telegram bot.
 
-## Содержание
-1. [Возможности](#возможности)
-2. [Установка](#установка)
-3. [Документация](#документация)
+## Content
+1. [Features](#Possibilities)
+2. [Installation](#installation)
+3. [Documentation](#documentation)
 
-## Возможности
-1. **Добавление IP-камер RTSP потока:** Легкое добавление IP-камер для мониторинга.
-2. **Проверка и уведомление о состояниях IP-камер:** Бот предоставляет информацию о состоянии подключенных камер и уведомляет о возможных проблемах.
-3. **Получение скриншотов с IP-камер:** Возможность получать моментальные снимки с камер для быстрого просмотра.
-4. **Запись на видео:** Функция записи видео с IP-камер для последующего просмотра.
-5. **Запись по расписанию:** Возможность управления записью видео по заданному расписанию.
-6. **Загрузка видео в YouTube:** Автоматическая загрузка записанных видео на YouTube для удаленного доступа.
+## Possibilities
+1. **Adding IP cameras RTSP stream:** Easy to add IP cameras for monitoring.
+2. **Checking and notifying about the status of IP cameras:** The bot provides information about the status of connected cameras and notifies about possible problems.
+3. **Receiving screenshots from IP cameras:** Ability to receive snapshots from cameras for quick viewing.
+4. **Video recording:** Function of recording video from IP cameras for later viewing.
+5. **Scheduled recording:** Ability to control video recording according to a specified schedule.
+6. **Upload Videos to YouTube:** Automatically upload recorded videos to YouTube for remote access.
 
-## Установка
+## Installation
 - pass
 
-## Документация
-1. Подробную документацию вы найдете в папке `./doc/...`.
-2. Используемые версии: `python 3.11.4`, `aiogram`, `google-auth`, `google-auth-oauthlib`, `google-api-python-client`.
+## Documentation
+1. Detailed documentation can be found in the `./doc/...` folder.

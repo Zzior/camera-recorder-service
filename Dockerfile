@@ -1,6 +1,6 @@
 FROM python:3.11-bookworm
 
-WORKDIR /usr/src/step_bot
+WORKDIR /usr/src/video_bot
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

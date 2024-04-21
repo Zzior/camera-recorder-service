@@ -5,9 +5,11 @@ from logging import Logger  # , INFO, ERROR, WARNING
 from src.classes.base.notify_writer import BaseNotifyWriter
 from src.classes.base.singleton import Singleton
 from src.utils.ping import ping
+from src.const.notify_string import CAMERA_ONLINE_NFY, CAMERA_OFFLINE_NFY, CAMERA_CHANGE_STATUS_NFY
 
 
 class CameraManager(Singleton, BaseNotifyWriter):
+    cameras_status: dict[str, bool] = {}
     cameras: dict[str, str] = None
     _save_dir: Path = None
     save_path: str = None
@@ -24,6 +26,22 @@ class CameraManager(Singleton, BaseNotifyWriter):
         self.save_path = str(self._save_dir / "photo.jpg")
 
         self.cameras = cameras
+
+    async def status_checker(self, interval=5) -> None:
+        print(f"status_checker {self.cameras}")
+        while True:
+            statuses = await self.get_statuses()
+            message = ""
+            for camera, status in statuses.items():
+                if (camera not in self.cameras_status) or (status != self.cameras_status[camera]):
+                    self.cameras_status[camera] = status
+                    message += CAMERA_CHANGE_STATUS_NFY.format(
+                        name=camera, status=CAMERA_ONLINE_NFY if status else CAMERA_OFFLINE_NFY)
+
+            if message:
+                await self.send_notify(message, deferred=False)
+
+            await asyncio.sleep(interval)
 
     async def get_statuses(self) -> dict[str, bool]:
         result: dict[str, bool] = {}
