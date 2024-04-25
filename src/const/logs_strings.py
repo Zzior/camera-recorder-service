@@ -1,3 +1,11 @@
+# ===================================== __main__ ==================================================
+TASK_ERROR_LOG = "Error task cancel Exception: {e}"
+
+# ===================================== Admin_router ==============================================
+ADMIN_CAMERAS_IKB_LOG = "Error bot.edit_message_reply_markup in admin_menu -> cameras: {e}"
+ADMIN_DAYS_IKB_LOG = "Error bot.edit_message_reply_markup in admin_menu -> days: {e}"
+ADMIN_SCHEDULE_ADD_LOG = "Error adding schedule: {e}"
+
 # ===================================== RecordManager =============================================
 CAMERA_NOT_FOUND_LOG = "Camera '{name}' not found in cameras"
 CAMERA_NOW_RECORD_LOG = "Camera '{name}' is already being recorded"

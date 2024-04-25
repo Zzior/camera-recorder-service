@@ -4,11 +4,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup  # ReplyKeyboardRemove
 
 from src.bot.structures.fsm import Admin
-from src.bot.structures.keyboards import admin_main_rkb, records_rkb
+from src.bot.structures.keyboards import admin_main_rkb
 from src.const.button_string import BACK_BS
+from src.classes.data_classes import Schedule
 from src.const.message_answers import (
     MESSAGE_NOT_REG_ANS, MAIN_MENU_ANS,
-    ACTIVE_RECORDS_ANS, RECORDS_ACTIVE_ANS, ACTIVE_RECORDS_NONE_ANS, RECORDS_ERROR_ANS
+    ACTIVE_RECORDS_ANS, RECORDS_ACTIVE_ANS, ACTIVE_RECORDS_NONE_ANS, RECORDS_ERROR_ANS,
+    SCHEDULE_EMPTY_ANS, SCHEDULE_LIST_ANS, SCHEDULE_FORMAT_LIST_ANS, DAYS_STRING
 )
 
 
@@ -44,3 +46,19 @@ async def send_record_status(message: Message, status: dict[str, list], kb: Repl
         ans = ACTIVE_RECORDS_NONE_ANS
 
     await message.answer(ans, reply_markup=kb)
+
+
+def format_schedule(schedules: list[Schedule]) -> str:
+    if not schedules:
+        return SCHEDULE_EMPTY_ANS
+
+    result = SCHEDULE_LIST_ANS
+    for s in schedules:
+        duration = f"{s.duration // 3600}h {s.duration % 3600 // 60}m"
+        cameras = ", ".join(s.cameras)
+        days = ", ".join([DAYS_STRING[day] for day in s.days])
+        result += SCHEDULE_FORMAT_LIST_ANS.format(
+            id=s.index, s=s.start_time, d=duration, c=f"[{cameras}]", days=f"[{days}]"
+        )
+
+    return result

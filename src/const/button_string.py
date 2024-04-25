@@ -14,3 +14,5 @@ DELETE_BS = "➖Delete"
 RECORDS_START_BS = "🟢Start"
 RECORDS_STOP_BS = "🔴Stop"
 RECORDS_STATUS_BS = "🔵Status"
+
+CONFIRM_BS = "✅Confirm"

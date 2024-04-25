@@ -28,7 +28,6 @@ class CameraManager(Singleton, BaseNotifyWriter):
         self.cameras = cameras
 
     async def status_checker(self, interval=5) -> None:
-        print(f"status_checker {self.cameras}")
         while True:
             statuses = await self.get_statuses()
             message = ""

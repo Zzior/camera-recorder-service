@@ -1,16 +1,19 @@
 import asyncio
 
-from aiogram.types import Message, input_file
+from aiogram.types import Message, CallbackQuery, input_file
 from aiogram.fsm.context import FSMContext
-from aiogram import Router
+from aiogram import Router, Bot
 
 from src.utils.ping import ping
 from src.configuration import conf
 from src.bot.structures.fsm import Admin
-from src.bot.structures.templates import admin_main_menu, check_back_button, message_not_reg, send_record_status
+from src.bot.structures.templates import (admin_main_menu, check_back_button, message_not_reg, send_record_status,
+                                          format_schedule)
 
 from src.const.message_answers import *  # from src.const.button_string import *
+from src.const.logs_strings import ADMIN_CAMERAS_IKB_LOG, ADMIN_DAYS_IKB_LOG, ADMIN_SCHEDULE_ADD_LOG
 from src.bot.structures.keyboards import *
+from src.classes.data_classes import Schedule
 
 admin_router = Router(name="admin")
 
@@ -27,7 +30,9 @@ async def admin_router_main_menu(message: Message, state: FSMContext):
         await send_record_status(message=message, status=statuses, kb=records_rkb)
 
     elif message.text == SCHEDULE_BS:
-        await message.answer("soon")
+        sch_message = format_schedule(conf.schedule_manager.get_schedules())
+        await state.set_state(Admin.schedule)
+        await message.answer(text=sch_message, reply_markup=admin_add_and_del_rkb)
 
     elif message.text == CAMERAS_BS:
         await message.answer(LOAD_STATUSES_ANS, reply_markup=cameras_rkb)
@@ -110,6 +115,163 @@ async def admin_router_records_stop(message: Message, state: FSMContext):
 
     else:
         await message.answer(RECORDS_SELECT_CAMERA_ANS)
+
+
+# ===================================== Schedule ==================================================
+@admin_router.message(Admin.schedule)
+@check_back_button
+async def admin_router_schedule(message: Message, state: FSMContext):
+    if message.text == ADD_BS:
+        await state.set_state(Admin.schedule_add_time)
+        await message.answer(SCHEDULE_ENTER_TIME_ANS, reply_markup=back_rkb)
+
+    elif message.text == DELETE_BS:
+        if conf.schedule_manager.get_schedules():
+            info = conf.schedule_manager.get_schedules()
+            await state.set_data({"max": info[-1].index})
+            await state.set_state(Admin.schedule_delete)
+            await message.answer(SCHEDULE_DELETE_ANS, reply_markup=back_rkb)
+        else:
+            await message.answer(SCHEDULE_EMPTY_ANS)
+    else:
+        await message_not_reg(message, admin_add_and_del_rkb)
+
+
+@admin_router.message(Admin.schedule_add_time)
+@check_back_button
+async def admin_router_schedule_add_time(message: Message, state: FSMContext):
+    if conf.schedule_manager.is_valid_time(message.text):
+        await state.set_data({"start_time": message.text})
+        await state.set_state(Admin.schedule_add_duration)
+        await message.answer(SCHEDULE_ENTER_DURATION_ANS)
+    else:
+        await message.answer(SCHEDULE_ENTER_TIME_ERR_ANS)
+
+
+@admin_router.message(Admin.schedule_add_duration)
+@check_back_button
+async def admin_router_schedule_add_duration(message: Message, state: FSMContext):
+    if message.text and message.text.isdigit() and 1440 >= int(message.text) >= 1:
+        await state.update_data({"duration": int(message.text)*60, "cameras": []})
+        await state.set_state(Admin.schedule_add_cameras)
+        await message.answer(
+            SCHEDULE_SELECT_CAMERAS_IKB_ANS,
+            reply_markup=build_select_cameras_ikb(cameras=conf.configurator.cameras.keys(), selected=[])
+        )
+        await message.answer(SCHEDULE_SELECT_CAMERAS_RKB_ANS, reply_markup=schedule_cameras_rkb)
+
+    else:
+        await message.answer(SCHEDULE_ENTER_DURATION_ERR_ANS)
+
+
+@admin_router.message(Admin.schedule_add_cameras)
+@check_back_button
+async def admin_router_schedule_add_cameras(message: Message, state: FSMContext):
+    if message.text == CONFIRM_BS:
+        cameras = await state.get_data()
+        if cameras.get("cameras"):
+            await state.set_state(Admin.schedule_add_days)
+            await state.update_data({"days": []})
+            await message.answer(SCHEDULE_SELECT_DAYS_ANS, reply_markup=build_select_days_ikb(selected=[]))
+
+        else:
+            await message.answer(SCHEDULE_SELECT_CAMERAS_EMPTY_ANS)
+    else:
+        await message.answer(SCHEDULE_SELECT_CAMERAS_ERR_ANS)
+
+
+@admin_router.callback_query(Admin.schedule_add_cameras)
+async def admin_router_schedule_add_cameras_ikb(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    if callback.data in conf.configurator.cameras:
+        data = await state.get_data()
+        if callback.data in data["cameras"]:
+            data["cameras"].remove(callback.data)
+            await callback.answer(text=DELETED_ANS)
+        else:
+            data["cameras"].append(callback.data)
+            await callback.answer(text=ADDED_ANS)
+
+        await state.update_data(data)
+
+        try:
+            await bot.edit_message_reply_markup(
+                chat_id=callback.message.chat.id,
+                message_id=callback.message.message_id,
+                reply_markup=build_select_cameras_ikb(cameras=conf.configurator.cameras.keys(), selected=data["cameras"])
+            )
+        except Exception as e:
+            ADMIN_CAMERAS_IKB_LOG.format(e)
+
+
+@admin_router.message(Admin.schedule_add_days)
+@check_back_button
+async def admin_router_schedule_add_days_rkb(message: Message, state: FSMContext):
+    if message.text == CONFIRM_BS:
+        data = await state.get_data()
+        if data["days"]:
+            try:
+                days = [int(day) for day in data["days"]]
+                info = Schedule(
+                    start_time=data["start_time"],
+                    duration=data["duration"],
+                    cameras=sorted(data["cameras"]),
+                    days=sorted(days)
+                )
+                status = conf.schedule_manager.add_schedule(info=info)
+            except Exception as e:
+                ADMIN_SCHEDULE_ADD_LOG.format(e=e)
+                status = 9
+
+            if status == 0:
+                await message.answer(SCHEDULE_CONFIRM_ANS)
+                await admin_main_menu(message, state)
+
+            else:
+                await message.answer(SCHEDULE_ADD_ERR.format(name=status))
+        else:
+            await message.answer(SCHEDULE_SELECT_DAYS_EMPTY_ANS)
+    else:
+        await message.answer(SCHEDULE_SELECT_DATS_ERR_ANS)
+
+
+@admin_router.callback_query(Admin.schedule_add_days)
+async def admin_router_schedule_add_days_ikb(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    if callback.data and callback.data.isdigit() and (7 >= int(callback.data) >= 1):
+        data = await state.get_data()
+        if callback.data in data["days"]:
+            data["days"].remove(callback.data)
+            await callback.answer(text=DELETED_ANS)
+        else:
+            data["days"].append(callback.data)
+            await callback.answer(text=ADDED_ANS)
+
+        await state.update_data(data)
+
+        try:
+            await bot.edit_message_reply_markup(
+                chat_id=callback.message.chat.id,
+                message_id=callback.message.message_id,
+                reply_markup=build_select_days_ikb(selected=data["days"])
+            )
+        except Exception as e:
+            ADMIN_DAYS_IKB_LOG.format(e=e)
+
+
+@admin_router.message(Admin.schedule_delete)
+@check_back_button
+async def admin_router_schedule_delete(message: Message, state: FSMContext):
+    if message.text and message.text.isdigit():
+        data = await state.get_data()
+        index = int(message.text)
+        if data["max"] >= index >= 0:
+            conf.schedule_manager.del_schedule(index_from_get=index)
+            await message.answer(SCHEDULE_DELETED_ANS)
+            await admin_main_menu(message, state)
+
+        else:
+            await message.answer(SCHEDULE_DELETE_ERR_ANS)
+    else:
+        await message.answer(SCHEDULE_DELETE_ANS)
 
 
 # ===================================== Cameras ===================================================

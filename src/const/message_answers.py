@@ -5,7 +5,10 @@ NOT_PERMISSION_ANS = "You not have permission!"
 MAIN_MENU_ANS = "🏠Main Menu"
 MESSAGE_NOT_REG_ANS = "Choose an option⬇️"
 
-# ===================================== Cameras ===============================
+ADDED_ANS = "➕Added"
+DELETED_ANS = "➖Removed"
+
+# ===================================== Cameras ===================================================
 LOAD_STATUSES_ANS = "Load cameras ..."  # If press cameras in main menu
 CAM_STATUSES_LIST_ANS = "🔵Status   ─  Name\n"
 
@@ -26,9 +29,9 @@ DEL_CAMERA_DONE_ANS = "🗑Camera <b>{name}</b> deleted"
 
 PHOTO_LOAD_ANS = "Loading photo ..."
 PHOTO_CAMERA_SELECT_ANS = "Select the camera to get photo: "
-# =============================================================================
+# =================================================================================================
 
-# ===================================== Records ===============================
+# ===================================== Records ===================================================
 RECORDS_ACTIVE_ANS = "🟢Active "
 RECORDS_ERROR_ANS = "🔴Error  "
 ACTIVE_RECORDS_ANS = "Active records\n🔵Status   ─  Name  ─  Time left\n "
@@ -41,4 +44,33 @@ RECORDS_ENTER_DURATION_ANS = "Enter duration of record in minutes: "
 RECORDS_RUN_ACCEPTED_ANS = "✅Camera <b>{name}</b> recording for <b>{duration}</b> minutes accepted"
 
 RECORDS_STOP_ACCEPTED_ANS = "⏹Camera <b>{name}</b> recording stopped"
-# =============================================================================
+# ================================================================================================
+
+
+# ===================================== Schedule ==================================================
+DAYS_STRING = {1: "Mo", 2: "Tu", 3: "We", 4: "Th", 5: "Fr", 6: "Sa", 7: "Su"}
+SCHEDULE_FORMAT_LIST_ANS = "{id:^3}|{s:^7}|{d:^8}| {c}  ─  {days}\n"
+SCHEDULE_LIST_ANS = SCHEDULE_FORMAT_LIST_ANS.format(id="id", s="Start", d="Duration", c="Cameras", days="Days")
+SCHEDULE_EMPTY_ANS = "Schedule is Empty!"
+
+SCHEDULE_ENTER_TIME_ANS = "Enter start time"
+SCHEDULE_ENTER_TIME_ERR_ANS = "Not a valid time.\nPlease send time in format HH:MM"
+
+SCHEDULE_ENTER_DURATION_ANS = "Enter duration in minutes"
+SCHEDULE_ENTER_DURATION_ERR_ANS = "Not a valid duration.\nPlease send 1-1440 minutes"
+
+SCHEDULE_SELECT_CAMERAS_IKB_ANS = "Select cameras to recording"
+SCHEDULE_SELECT_CAMERAS_RKB_ANS = "And press confirm"
+SCHEDULE_SELECT_CAMERAS_EMPTY_ANS = "You haven't selected any cameras"
+SCHEDULE_SELECT_CAMERAS_ERR_ANS = "Please select cameras to recording and press confirm"
+
+SCHEDULE_SELECT_DAYS_ANS = "Select days to record"
+SCHEDULE_SELECT_DAYS_EMPTY_ANS = "You haven't selected any days"
+SCHEDULE_SELECT_DATS_ERR_ANS = "Please select days to recording and press confirm"
+
+SCHEDULE_ADD_ERR = "Error adding schedule, error: {name}"
+SCHEDULE_CONFIRM_ANS = "✅Schedule added"
+
+SCHEDULE_DELETE_ANS = "Send id schedule"
+SCHEDULE_DELETE_ERR_ANS = "There is no schedule with this id"
+SCHEDULE_DELETED_ANS = "🗑Deleted schedule"

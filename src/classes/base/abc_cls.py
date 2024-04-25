@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from logging import Logger
+from pathlib import Path
 
 
 class AbstractNotifyManager(ABC):
@@ -44,3 +45,39 @@ class AbstractNotifyWriter(ABC):
     @abstractmethod
     def write_log(self, log_info: str, log_level: int) -> None:
         pass
+
+
+class AbstractRecordManager(ABC):
+    cameras: dict[str, str]
+    save_dir: Path
+    logger: Logger
+    notify_manager: AbstractNotifyManager
+    notify_name: str
+
+    active_records: dict
+    error_records: dict
+
+    @abstractmethod
+    def init(self) -> None:
+        """for the type annotation, fill in the arguments in __init__
+        but the function should not do anything, since it should inherit from Singleton"""
+
+        # initialization of a single instance should be here
+        pass
+
+    @abstractmethod
+    async def process_watcher(self) -> None:
+        pass
+
+    @abstractmethod
+    async def run_record(self, camera: str, duration: int) -> bool:
+        pass
+
+    @abstractmethod
+    async def stop_record(self, camera: str) -> None:
+        pass
+
+    @abstractmethod
+    def get_records_status(self) -> dict[str, list]:
+        pass
+

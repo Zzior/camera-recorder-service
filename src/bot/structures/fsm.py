@@ -20,3 +20,10 @@ class Admin(StatesGroup):
     records_run_name = State()
     records_run_duration = State()
     records_stop = State()
+
+    # Schedule
+    schedule_add_time = State()
+    schedule_add_duration = State()
+    schedule_add_cameras = State()
+    schedule_add_days = State()
+    schedule_delete = State()

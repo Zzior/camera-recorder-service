@@ -1,10 +1,11 @@
-from dataclasses import dataclass
 from pathlib import Path
 import asyncio
 import datetime
 from logging import Logger, INFO, ERROR, WARNING
 
+from src.classes.data_classes import RecordConfigs, ProcessInfo
 from src.classes.base.notify_writer import BaseNotifyWriter
+from src.classes.base.abc_cls import AbstractRecordManager
 from src.classes.base.singleton import Singleton
 from src.utils.ping import ping
 
@@ -12,28 +13,7 @@ from src.const.logs_strings import *
 from src.const.notify_string import *
 
 
-@dataclass
-class RecordConfigs:
-    video_date_name: str = "%Y_%m_%d_%H_%M"
-    video_type: str = "mkv"
-    video_bit: str = "512k"
-    video_fps: str = "15"
-    video_dimensions: str = "1280x720"
-    video_codec: str = "libx264"
-    audio_codec: str = "aac"
-    timeout: int = 5000000
-    timeout_ping: int = 3
-
-
-@dataclass
-class ProcessInfo:
-    rtsp_url: str
-    process: asyncio.subprocess.Process
-    start_time: datetime.datetime
-    duration: int
-
-
-class RecordManager(Singleton, BaseNotifyWriter):
+class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
     cameras: dict[str, str] = None
     save_dir: Path = None
     logger: Logger = None
@@ -74,7 +54,9 @@ class RecordManager(Singleton, BaseNotifyWriter):
                 # Record error
                 elif (return_code is not None) and (recorded_time < info.duration):
                     stdout, stderr = await info.process.communicate()
-                    self.write_log(END_RECORD_LOG.format(name=camera, rc=return_code, sout=stdout, serr=stderr), ERROR)
+                    self.write_log(
+                        ERROR_RECORD_LOG.format(name=camera, rc=return_code, sout=stdout, serr=stderr), ERROR
+                    )
                     await self.send_notify(ERROR_RECORD_NFY.format(name=camera))
                     self.error_records[camera] = self.active_records.pop(camera)
 
