@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from logging import Logger
 from pathlib import Path
 
+from src.classes.data_classes import ProcessInfo, RecordInfo
+
 
 class AbstractNotifyManager(ABC):
     @abstractmethod
@@ -54,8 +56,8 @@ class AbstractRecordManager(ABC):
     notify_manager: AbstractNotifyManager
     notify_name: str
 
-    active_records: dict
-    error_records: dict
+    active_records: dict[str, ProcessInfo]
+    error_records: dict[str, ProcessInfo]
 
     @abstractmethod
     def init(self) -> None:
@@ -78,6 +80,5 @@ class AbstractRecordManager(ABC):
         pass
 
     @abstractmethod
-    def get_records_status(self) -> dict[str, list]:
+    def get_records_status(self) -> dict[str, RecordInfo]:
         pass
-

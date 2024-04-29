@@ -10,6 +10,10 @@ class Admin(StatesGroup):
     cameras = State()
     settings = State()
 
+    # Files
+    files_upload = State()
+    files_delete = State()
+
     # Cameras
     cameras_add_name = State()
     cameras_add_rtsp = State()

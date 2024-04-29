@@ -5,6 +5,7 @@ import asyncio
 
 @dataclass
 class RecordConfigs:
+    rtsp_transport: str = "tcp"
     video_date_name: str = "%Y_%m_%d_%H_%M"
     video_type: str = "mkv"
     video_bit: str = "512k"
@@ -22,6 +23,23 @@ class ProcessInfo:
     process: asyncio.subprocess.Process
     start_time: datetime.datetime
     duration: int
+    file_name: str
+
+
+@dataclass
+class RecordInfo:
+    status: bool  # Recording or error
+    start_time: datetime.datetime
+    duration: int
+    time_left: int
+    file_name: str
+
+
+@dataclass
+class FileInfo:
+    file_name: str
+    file_size: int
+    record_status: bool = None
 
 
 @dataclass

@@ -75,6 +75,14 @@ admin_add_and_del_rkb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+files_rkb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text=UPLOAD_BS), KeyboardButton(text=DELETE_BS)],
+        [KeyboardButton(text=BACK_BS)]
+    ],
+    resize_keyboard=True
+)
+
 records_rkb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text=RECORDS_START_BS), KeyboardButton(text=RECORDS_STOP_BS)],
@@ -97,5 +105,3 @@ cameras_rkb = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
-
-

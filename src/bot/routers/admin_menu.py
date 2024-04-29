@@ -7,8 +7,9 @@ from aiogram import Router, Bot
 from src.utils.ping import ping
 from src.configuration import conf
 from src.bot.structures.fsm import Admin
-from src.bot.structures.templates import (admin_main_menu, check_back_button, message_not_reg, send_record_status,
-                                          format_schedule)
+from src.bot.structures.templates import (
+    admin_main_menu, check_back_button, message_not_reg, format_record_status,
+    format_schedule, format_files, text_to_int, format_files_list)
 
 from src.const.message_answers import *  # from src.const.button_string import *
 from src.const.logs_strings import ADMIN_CAMERAS_IKB_LOG, ADMIN_DAYS_IKB_LOG, ADMIN_SCHEDULE_ADD_LOG
@@ -22,12 +23,16 @@ admin_router = Router(name="admin")
 @check_back_button
 async def admin_router_main_menu(message: Message, state: FSMContext):
     if message.text == FILES_BS:
-        await message.answer("soon")
+        info = conf.file_manager.files_info()
+        msg = format_files(info)
+        await state.set_data({"max": len(info)-1, "files": info})
+        await state.set_state(Admin.files)
+        await message.answer(text=msg, reply_markup=files_rkb)
 
     elif message.text == RECORDS_BS:
+        msg = format_record_status(conf.record_manager.get_records_status())
         await state.set_state(Admin.records)
-        statuses = conf.record_manager.get_records_status()
-        await send_record_status(message=message, status=statuses, kb=records_rkb)
+        await message.answer(text=msg, reply_markup=records_rkb)
 
     elif message.text == SCHEDULE_BS:
         sch_message = format_schedule(conf.schedule_manager.get_schedules())
@@ -48,6 +53,42 @@ async def admin_router_main_menu(message: Message, state: FSMContext):
 
     elif message.text == SETTINGS_BS:
         await message.answer("soon")
+
+    else:
+        await message_not_reg(message, kb=admin_main_rkb)
+
+
+# ===================================== Files =====================================================
+@admin_router.message(Admin.files)
+@check_back_button
+async def admin_router_files(message: Message, state: FSMContext):
+    if message.text == UPLOAD_BS:
+        await message.answer("soon")
+
+    elif message.text == DELETE_BS:
+        await state.set_state(Admin.files_delete)
+        await message.answer(FILES_DELETE_ANS, reply_markup=back_rkb)
+
+    else:
+        await message_not_reg(message, kb=files_rkb)
+
+
+@admin_router.message(Admin.files_delete)
+@check_back_button
+async def admin_router_files_delete(message: Message, state: FSMContext):
+    data = await state.get_data()
+    if message.text:
+        numbers = text_to_int(text=message.text, max_val=data["max"])
+        if numbers:
+            files = format_files_list(data["files"], numbers)
+            await message.answer(FILES_DELETED_ANS)
+            conf.file_manager.delete_files(files)
+            await admin_main_menu(message, state)
+
+        else:
+            await message.answer(FILES_DELETE_ERR_ANS)
+    else:
+        await message.answer(FILES_DELETE_ANS)
 
 
 # ===================================== Records ===================================================
@@ -71,8 +112,8 @@ async def admin_router_records(message: Message, state: FSMContext):
             await message.answer(ACTIVE_RECORDS_NONE_ANS)
 
     elif message.text == RECORDS_STATUS_BS:
-        statuses = conf.record_manager.get_records_status()
-        await send_record_status(message=message, status=statuses, kb=records_rkb)
+        msg = format_record_status(conf.record_manager.get_records_status())
+        await message.answer(text=msg)
 
     else:
         await message_not_reg(message, records_rkb)
@@ -128,7 +169,7 @@ async def admin_router_schedule(message: Message, state: FSMContext):
     elif message.text == DELETE_BS:
         if conf.schedule_manager.get_schedules():
             info = conf.schedule_manager.get_schedules()
-            await state.set_data({"max": info[-1].index})
+            await state.set_data({"max": len(info)-1})
             await state.set_state(Admin.schedule_delete)
             await message.answer(SCHEDULE_DELETE_ANS, reply_markup=back_rkb)
         else:
@@ -197,7 +238,9 @@ async def admin_router_schedule_add_cameras_ikb(callback: CallbackQuery, state: 
             await bot.edit_message_reply_markup(
                 chat_id=callback.message.chat.id,
                 message_id=callback.message.message_id,
-                reply_markup=build_select_cameras_ikb(cameras=conf.configurator.cameras.keys(), selected=data["cameras"])
+                reply_markup=build_select_cameras_ikb(
+                    cameras=conf.configurator.cameras.keys(), selected=data["cameras"]
+                )
             )
         except Exception as e:
             ADMIN_CAMERAS_IKB_LOG.format(e)
@@ -349,7 +392,7 @@ async def admin_router_cameras_delete_name(message: Message, state: FSMContext):
 
 @admin_router.message(Admin.cameras_photo)
 @check_back_button
-async def admin_router_camera_photo(message: Message, state: FSMContext):
+async def admin_router_camera_photo(message: Message):
     if message.text in conf.configurator.cameras:
         await message.answer(PHOTO_LOAD_ANS)
         photo_path = await conf.cameras_manager.get_photo(message.text)

@@ -16,3 +16,5 @@ RECORDS_STOP_BS = "🔴Stop"
 RECORDS_STATUS_BS = "🔵Status"
 
 CONFIRM_BS = "✅Confirm"
+
+UPLOAD_BS = "🌐Upload to YT"

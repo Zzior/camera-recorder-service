@@ -18,10 +18,12 @@ async def start_bot():
     conf.notify_manager.configurate(bot=bot, loger=conf.logger)
     conf.cameras_manager.configurate_notifier(notify_manager=conf.notify_manager, logger=conf.logger)
     conf.record_manager.configurate_notifier(notify_manager=conf.notify_manager, logger=conf.logger)
+    conf.file_manager.configurate_notifier(notify_manager=conf.notify_manager, logger=conf.logger)
 
     record_watcher = asyncio.create_task(conf.record_manager.process_watcher())
     camera_watcher = asyncio.create_task(conf.cameras_manager.status_checker())
     schedule_task = asyncio.create_task(conf.schedule_manager.schedule_task())
+    file_manager = asyncio.create_task(conf.file_manager.file_task())
 
     for admin in conf.configurator.admins.values():
         for event_name in conf.notify_manager.events.keys():
@@ -31,7 +33,7 @@ async def start_bot():
     # DP
     dp = get_dispatcher()
     await dp.start_polling(bot)
-    for task in (record_watcher, camera_watcher, schedule_task):
+    for task in (record_watcher, camera_watcher, schedule_task, file_manager):
         try:
             task.cancel()
         except Exception as e:

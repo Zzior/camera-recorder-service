@@ -1,9 +1,9 @@
 from pathlib import Path
 import asyncio
 import datetime
-from logging import Logger, INFO, ERROR, WARNING
+from logging import INFO, ERROR, WARNING
 
-from src.classes.data_classes import RecordConfigs, ProcessInfo
+from src.classes.data_classes import RecordConfigs, ProcessInfo, RecordInfo
 from src.classes.base.notify_writer import BaseNotifyWriter
 from src.classes.base.abc_cls import AbstractRecordManager
 from src.classes.base.singleton import Singleton
@@ -16,8 +16,6 @@ from src.const.notify_string import *
 class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
     cameras: dict[str, str] = None
     save_dir: Path = None
-    logger: Logger = None
-    notify_manager = None
     notify_name = "Record status"
 
     record_config: RecordConfigs = RecordConfigs()
@@ -94,7 +92,7 @@ class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
 
         cmd = [
             "ffmpeg", "-hide_banner", "-y", "-loglevel", "error", "-timeout", str(config.timeout),
-            "-rtsp_transport", "tcp", "-i", rtsp,
+            "-rtsp_transport", config.rtsp_transport, "-i", rtsp,
             "-c:v", config.video_codec, "-b:v", config.video_bit,
             "-r", config.video_fps, "-s", config.video_dimensions,
             "-c:a", config.audio_codec, "-t", record_duration, filepath
@@ -123,8 +121,10 @@ class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
         )
 
         # Save info with record
-        self.active_records[camera] = ProcessInfo(rtsp_url=self.cameras[camera], process=process,
-                                                  start_time=datetime.datetime.now(), duration=duration)
+        self.active_records[camera] = ProcessInfo(
+            rtsp_url=self.cameras[camera], process=process,
+            start_time=datetime.datetime.now(), duration=duration, file_name=Path(cmd[-1]).name
+        )
 
         self.write_log(RECORD_RUN_LOG.format(name=camera), INFO)
         await self.send_notify(RECORD_RUN_NFY.format(name=camera))
@@ -144,21 +144,23 @@ class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
                     info.process.kill()
                     await info.process.wait()
 
-    def get_records_status(self) -> dict[str, list]:
+    def get_records_status(self) -> dict[str, RecordInfo]:
         """
         Return a dictionary of records with their current status and remaining duration.
         Each entry in the dictionary has a key as the camera name and the value as a list containing:
         - a boolean indicating whether the recording is active (True) or in error (False)
         - an integer representing the seconds left in the recording duration
+        - a string represents the recording file name
         """
-        result: dict[str, list] = {}
+        result: dict[str, RecordInfo] = {}
         now = datetime.datetime.now()
 
         # Helper function to update result
         def update_status(records, is_active):
             for camera, info in records.items():
                 time_left: int = info.duration - (now - info.start_time).seconds
-                result[camera] = [is_active, time_left]
+                result[camera] = RecordInfo(status=is_active, start_time=info.start_time, duration=info.duration,
+                                            time_left=time_left, file_name=info.file_name)
 
         update_status(self.active_records, True)
         update_status(self.error_records, False)

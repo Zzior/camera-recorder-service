@@ -44,7 +44,7 @@ RECORDS_ENTER_DURATION_ANS = "Enter duration of record in minutes: "
 RECORDS_RUN_ACCEPTED_ANS = "✅Camera <b>{name}</b> recording for <b>{duration}</b> minutes accepted"
 
 RECORDS_STOP_ACCEPTED_ANS = "⏹Camera <b>{name}</b> recording stopped"
-# ================================================================================================
+# =================================================================================================
 
 
 # ===================================== Schedule ==================================================
@@ -74,3 +74,15 @@ SCHEDULE_CONFIRM_ANS = "✅Schedule added"
 SCHEDULE_DELETE_ANS = "Send id schedule"
 SCHEDULE_DELETE_ERR_ANS = "There is no schedule with this id"
 SCHEDULE_DELETED_ANS = "🗑Deleted schedule"
+
+# ===================================== Files =====================================================
+FILES_RECORD_T_ANS = "🟢"
+FILES_RECORD_F_ANS = "🔴"
+FILES_RECORD_N_ANS = ""
+FILES_EMPTY_ANS = "Empty files"
+FILES_LIST_FORMAT_ANS = "{id:^3}| {name} | {size:^7} {status}\n"
+FILES_LIST_ANS = "id |                     Name                     |  Size   \n"
+
+FILES_DELETE_ANS = "Send file id"
+FILES_DELETE_ERR_ANS = "Enter the file id or several separated by a space"
+FILES_DELETED_ANS = "🗑Files deleted"

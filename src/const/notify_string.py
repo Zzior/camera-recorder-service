@@ -8,5 +8,9 @@ RESUME_RECORD_NFY = "⏯Camera <b>{name}</b> recording resumed"
 # ===================================== CamerasManager ============================================
 CAMERA_ONLINE_NFY = "🟢Online"
 CAMERA_OFFLINE_NFY = "🔴Offline"
-CAMERA_CHANGE_STATUS_NFY = "🎦{name} -> {status}\n"
+CAMERA_CHANGE_STATUS_NFY = "🎦<b>{name}</b> -> <b>{status}</b>\n"
+# =================================================================================================
+
+# ===================================== FileManager ===============================================
+FILE_DELETED_NFY = "🗑File <b>{name}</b> deleted"
 # =================================================================================================

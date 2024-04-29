@@ -1,6 +1,5 @@
 import asyncio
 from pathlib import Path
-from logging import Logger  # , INFO, ERROR, WARNING
 
 from src.classes.base.notify_writer import BaseNotifyWriter
 from src.classes.base.singleton import Singleton
@@ -13,8 +12,6 @@ class CameraManager(Singleton, BaseNotifyWriter):
     cameras: dict[str, str] = None
     _save_dir: Path = None
     save_path: str = None
-    logger: Logger = None
-    notify_manager = None
     notify_name = "Camera Status"
 
     def __init__(self, save_dir: Path, cameras: dict[str, str]):
