@@ -5,15 +5,15 @@ from dotenv import load_dotenv
 from dataclasses import dataclass
 
 # Data access (With Save configs)
-from src.classes.models.configurator import Configurator
+from classes.models.configurator import Configurator
 
 # Models (Utils)
-from src.classes.models.loger import setup_logger
-from src.classes.models.file_manager import FileManager
-from src.classes.models.notify_manager import NotifyManager
-from src.classes.models.record_manager import RecordManager
-from src.classes.models.camera_manager import CameraManager
-from src.classes.models.schedule_manager import ScheduleManager
+from classes.models.loger import setup_logger
+from classes.models.file_manager import FileManager
+from classes.models.notify_manager import NotifyManager
+from classes.models.record_manager import RecordManager
+from classes.models.camera_manager import CameraManager
+from classes.models.schedule_manager import ScheduleManager
 
 app_dir: Path = Path(__file__).parent.parent
 

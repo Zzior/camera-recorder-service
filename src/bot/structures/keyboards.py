@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
-from src.const.button_string import *
+from const.button_string import *
 
 back_rkb = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text=BACK_BS)]],

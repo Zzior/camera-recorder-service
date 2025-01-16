@@ -3,11 +3,11 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup  # ReplyKeyboardRemove
 
-from src.bot.structures.fsm import Admin
-from src.bot.structures.keyboards import admin_main_rkb
-from src.const.button_string import BACK_BS
-from src.classes.data_classes import Schedule, RecordInfo, FileInfo
-from src.const.message_answers import *
+from bot.structures.fsm import Admin
+from bot.structures.keyboards import admin_main_rkb
+from const.button_string import BACK_BS
+from classes.data_classes import Schedule, RecordInfo, FileInfo
+from const.message_answers import *
 
 
 async def message_not_reg(message: Message, kb: ReplyKeyboardMarkup = None) -> None:

@@ -1,10 +1,10 @@
 import asyncio
 from pathlib import Path
 
-from src.classes.base.notify_writer import BaseNotifyWriter
-from src.classes.base.singleton import Singleton
-from src.utils.ping import ping
-from src.const.notify_string import CAMERA_ONLINE_NFY, CAMERA_OFFLINE_NFY, CAMERA_CHANGE_STATUS_NFY
+from classes.base.notify_writer import BaseNotifyWriter
+from classes.base.singleton import Singleton
+from utils.ping import ping
+from const.notify_string import CAMERA_ONLINE_NFY, CAMERA_OFFLINE_NFY, CAMERA_CHANGE_STATUS_NFY
 
 
 class CameraManager(Singleton, BaseNotifyWriter):
@@ -14,7 +14,7 @@ class CameraManager(Singleton, BaseNotifyWriter):
     save_path: str = None
     notify_name = "Camera Status"
 
-    def __init__(self, save_dir: Path, cameras: dict[str, str]):
+    def __init__(self, save_dir: Path, cameras: dict[str, str]):  # noqa
         pass
 
     def init(self, save_dir: Path, cameras: dict[str, str]) -> None:

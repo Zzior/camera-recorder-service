@@ -1,6 +1,6 @@
 from logging import Logger
 
-from src.classes.base.abc_cls import AbstractNotifyWriter, AbstractNotifyManager
+from classes.base.abc_cls import AbstractNotifyWriter, AbstractNotifyManager
 
 
 class BaseNotifyWriter(AbstractNotifyWriter):

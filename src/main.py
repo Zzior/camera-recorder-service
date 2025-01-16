@@ -4,9 +4,9 @@ import asyncio
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 
-from src.bot.dispatcher import get_dispatcher
-from src.configuration import conf
-from src.const.logs_strings import TASK_ERROR_LOG
+from bot.dispatcher import get_dispatcher
+from configuration import conf
+from const.logs_strings import TASK_ERROR_LOG
 
 
 async def start_bot():

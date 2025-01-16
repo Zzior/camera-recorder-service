@@ -2,17 +2,17 @@ import asyncio
 from pathlib import Path
 from datetime import datetime
 
-from src.classes.base.singleton import Singleton
-from src.classes.base.data_save import BaseDataSave
-from src.classes.base.abc_cls import AbstractRecordManager
-from src.classes.data_classes import Schedule
+from classes.base.singleton import Singleton
+from classes.base.data_save import BaseDataSave
+from classes.base.abc_cls import AbstractRecordManager
+from classes.data_classes import Schedule
 
 
 class ScheduleManager(Singleton, BaseDataSave):
     record_manager: AbstractRecordManager
     _config: dict[str, list[list]]
 
-    def __init__(self, config_path: Path, record_manager: AbstractRecordManager) -> None:
+    def __init__(self, config_path: Path, record_manager: AbstractRecordManager) -> None:  # noqa
         pass
 
     def init(self, config_path: Path, record_manager: AbstractRecordManager) -> None:

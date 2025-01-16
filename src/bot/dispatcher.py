@@ -1,9 +1,9 @@
 from aiogram import Dispatcher
 
-from src.bot.routers import routers
-from src.bot.middlewares.check_permission import AdminChecker
+from .routers import routers
+from .middlewares.check_permission import AdminChecker
 
-from src.configuration import conf
+from configuration import conf
 
 
 def get_dispatcher() -> Dispatcher:

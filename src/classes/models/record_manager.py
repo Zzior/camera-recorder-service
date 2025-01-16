@@ -3,14 +3,14 @@ import asyncio
 import datetime
 from logging import INFO, ERROR, WARNING
 
-from src.classes.data_classes import RecordConfigs, ProcessInfo, RecordInfo
-from src.classes.base.notify_writer import BaseNotifyWriter
-from src.classes.base.abc_cls import AbstractRecordManager
-from src.classes.base.singleton import Singleton
-from src.utils.ping import ping
+from classes.data_classes import RecordConfigs, ProcessInfo, RecordInfo
+from classes.base.notify_writer import BaseNotifyWriter
+from classes.base.abc_cls import AbstractRecordManager
+from classes.base.singleton import Singleton
+from utils.ping import ping
 
-from src.const.logs_strings import *
-from src.const.notify_string import *
+from const.logs_strings import *
+from const.notify_string import *
 
 
 class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
@@ -22,10 +22,10 @@ class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
     active_records: dict[str, ProcessInfo] = dict()
     error_records: dict[str, ProcessInfo] = dict()
 
-    def __init__(self, save_dir: Path, cameras: dict[str, str], record_config: RecordConfigs = RecordConfigs):
+    def __init__(self, save_dir: Path, cameras: dict[str, str], record_config: RecordConfigs = RecordConfigs()):  # noqa
         pass
 
-    def init(self, save_dir, cameras, record_config=RecordConfigs()) -> None:
+    def init(self, save_dir: Path, cameras: dict[str, str], record_config: RecordConfigs = RecordConfigs()) -> None:
         self.save_dir = save_dir
         self.save_dir.mkdir(parents=True, exist_ok=True)
 

@@ -4,9 +4,9 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 
 
-from src.configuration import conf
-from src.bot.structures.templates import admin_main_menu
-from src.const.message_answers import FIRST_START_ANS, NOT_PERMISSION_ANS
+from configuration import conf
+from bot.structures.templates import admin_main_menu
+from const.message_answers import FIRST_START_ANS, NOT_PERMISSION_ANS
 commands_router = Router(name='commands')
 
 

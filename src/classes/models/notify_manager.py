@@ -3,10 +3,10 @@ from logging import Logger
 
 from aiogram import Bot
 
-from src.classes.base.abc_cls import AbstractNotifyManager
-from src.classes.base.singleton import Singleton
+from classes.base.abc_cls import AbstractNotifyManager
+from classes.base.singleton import Singleton
 
-from src.const.logs_strings import SEND_NOTIFY_ERR_LOG
+from const.logs_strings import SEND_NOTIFY_ERR_LOG
 
 
 class NotifyManager(AbstractNotifyManager, Singleton):
@@ -57,4 +57,3 @@ class NotifyManager(AbstractNotifyManager, Singleton):
 
         for event_name, messages in copy.items():
             await self.notify(event_name=event_name, message=messages, deferred=False)
-

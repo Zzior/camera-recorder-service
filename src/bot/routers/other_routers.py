@@ -1,8 +1,8 @@
-from aiogram.types import Message, CallbackQuery
-from aiogram import Router, Bot
+from aiogram.types import Message
+from aiogram import Router
 from aiogram.fsm.context import FSMContext
 
-from ..routers.commands import start_command
+from bot.routers.commands import start_command
 
 other_routers = Router(name="settings")
 

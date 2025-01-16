@@ -4,17 +4,18 @@ from aiogram.types import Message, CallbackQuery, input_file
 from aiogram.fsm.context import FSMContext
 from aiogram import Router, Bot
 
-from src.utils.ping import ping
-from src.configuration import conf
-from src.bot.structures.fsm import Admin
-from src.bot.structures.templates import (
+from utils.ping import ping
+from configuration import conf
+from bot.structures.fsm import Admin
+from bot.structures.templates import (
     admin_main_menu, check_back_button, message_not_reg, format_record_status,
-    format_schedule, format_files, text_to_int, format_files_list)
+    format_schedule, format_files, text_to_int, format_files_list
+)
 
-from src.const.message_answers import *  # from src.const.button_string import *
-from src.const.logs_strings import ADMIN_CAMERAS_IKB_LOG, ADMIN_DAYS_IKB_LOG, ADMIN_SCHEDULE_ADD_LOG
-from src.bot.structures.keyboards import *
-from src.classes.data_classes import Schedule
+from const.message_answers import *  # from const.button_string import *
+from const.logs_strings import ADMIN_CAMERAS_IKB_LOG, ADMIN_DAYS_IKB_LOG, ADMIN_SCHEDULE_ADD_LOG
+from bot.structures.keyboards import *
+from classes.data_classes import Schedule
 
 admin_router = Router(name="admin")
 

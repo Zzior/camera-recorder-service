@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from logging import Logger
 from pathlib import Path
 
-from src.classes.data_classes import ProcessInfo, RecordInfo
+from classes.data_classes import ProcessInfo, RecordInfo
 
 
 class AbstractNotifyManager(ABC):

@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from src.classes.base.data_save import BaseDataSave
-from src.classes.base.singleton import Singleton
+from classes.base.data_save import BaseDataSave
+from classes.base.singleton import Singleton
 
 
 class Configurator(Singleton, BaseDataSave):
@@ -10,7 +10,7 @@ class Configurator(Singleton, BaseDataSave):
     cameras: dict[str, str]
     notifications: dict[str, list]
 
-    def __init__(self, config_path: Path) -> None:
+    def __init__(self, config_path: Path) -> None:  # noqa
         pass
 
     def init(self, config_path: Path) -> None:
@@ -35,4 +35,3 @@ class Configurator(Singleton, BaseDataSave):
     def delete_camera(self, name: str) -> None:
         self.cameras.pop(name)
         self.save_config()
-

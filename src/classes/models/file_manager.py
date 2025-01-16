@@ -3,11 +3,11 @@ from pathlib import Path
 from os import path, remove
 from datetime import datetime, timedelta
 
-from src.classes.base.notify_writer import BaseNotifyWriter
-from src.classes.base.abc_cls import AbstractRecordManager
-from src.classes.base.singleton import Singleton
-from src.classes.data_classes import FileInfo
-from src.const.notify_string import FILE_DELETED_NFY
+from classes.base.notify_writer import BaseNotifyWriter
+from classes.base.abc_cls import AbstractRecordManager
+from classes.base.singleton import Singleton
+from classes.data_classes import FileInfo
+from const.notify_string import FILE_DELETED_NFY
 
 
 class FileManager(Singleton, BaseNotifyWriter):
@@ -15,7 +15,7 @@ class FileManager(Singleton, BaseNotifyWriter):
     notify_name = "Files delete"
     record_manager: AbstractRecordManager
 
-    def __init__(self, files_path: Path, record_manager: AbstractRecordManager = None):
+    def __init__(self, files_path: Path, record_manager: AbstractRecordManager = None):  # noqa
         pass
 
     def init(self, files_path: Path, record_manager: AbstractRecordManager = None) -> None:
