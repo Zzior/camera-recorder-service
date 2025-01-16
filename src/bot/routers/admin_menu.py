@@ -392,7 +392,7 @@ async def admin_router_cameras_delete_name(message: Message, state: FSMContext):
 
 @admin_router.message(Admin.cameras_photo)
 @check_back_button
-async def admin_router_camera_photo(message: Message):
+async def admin_router_camera_photo(message: Message, state: FSMContext):
     if message.text in conf.configurator.cameras:
         await message.answer(PHOTO_LOAD_ANS)
         photo_path = await conf.cameras_manager.get_photo(message.text)

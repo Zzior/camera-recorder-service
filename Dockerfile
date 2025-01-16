@@ -7,5 +7,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "/usr/src/video_bot/src/bot/__main__.py"]
+CMD [ "python", "/usr/src/video_bot/src/bot/main.py"]
  
