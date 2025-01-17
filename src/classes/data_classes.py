@@ -13,7 +13,6 @@ class RecordConfigs:
     video_dimensions: str = "1280x720"
     video_codec: str = "libx264"
     audio_codec: str = "aac"
-    timeout: int = 3000000
     timeout_ping: int = 3
 
 

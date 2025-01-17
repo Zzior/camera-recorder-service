@@ -91,7 +91,7 @@ class RecordManager(Singleton, BaseNotifyWriter, AbstractRecordManager):
         filepath = str(save_path / filename)
 
         cmd = [
-            "ffmpeg", "-hide_banner", "-y", "-loglevel", "error", "-timeout", str(config.timeout),
+            "ffmpeg", "-hide_banner", "-y", "-loglevel", "error",
             "-rtsp_transport", config.rtsp_transport, "-i", rtsp,
             "-c:v", config.video_codec, "-b:v", config.video_bit,
             "-r", config.video_fps, "-s", config.video_dimensions,
